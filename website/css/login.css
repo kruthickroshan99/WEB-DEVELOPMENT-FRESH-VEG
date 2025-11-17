@@ -1,0 +1,108 @@
+*{
+    margin:0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Henny Penny', cursive;
+}
+body {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background: linear-gradient(to bottom right, #B3E5FC, #E3D6E3);
+    font-family: 'Henny Penny', cursive;
+    text-align: center;
+}
+
+/* Main Container */
+.container {
+    position: relative;
+    width: 100%;
+    max-width: 800px;
+}
+
+/* Welcome Text */
+.title {
+    font-size: 28px;
+    font-weight: bold;
+    color: #000;
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+/* Login Box */
+.login-box {
+    background: linear-gradient(to bottom right, #B3E5FC, #E0F7FA);
+    border-radius: 15px;
+    padding: 30px;
+    width: 320px;
+    margin: 20px auto;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.login-box h2 {
+    font-size: 22px;
+    margin-bottom: 15px;
+}
+
+.input-box {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #fff;
+    border-radius: 8px;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+}
+
+.input-box input {
+    border: none;
+    outline: none;
+    width: 85%;
+    font-size: 14px;
+}
+
+.remember-me {
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
+    margin: 10px 0;
+}
+
+/* Login Button */
+.login-btn {
+    background: #4DD0E1;
+    color: white;
+    font-size: 16px;
+    padding: 10px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+    transition: 0.3s;
+}
+
+.login-btn:hover {
+    background: #00ACC1;
+}
+
+/* Register Link */
+.register {
+    font-size: 14px;
+    margin-top: 10px;
+}
+
+/* Vegetables Floating */
+.veg-img {
+    position: absolute;
+    width: 80px;
+}
+
+.veg1 { top: 20%; left: 15%; }
+.veg2 { top: 20%; right: 15%; }
+.veg3 { bottom: 35%; left: 5%; }
+.veg4 { bottom: 10%; right: 10%; }
+.veg5 { top: 45%; right: 0%; }
+.veg6 { bottom: 10%; left: 15%}

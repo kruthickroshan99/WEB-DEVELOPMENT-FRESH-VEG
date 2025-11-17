@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Panel - Add Product</title>
+    <link rel="stylesheet" href="../css/admin.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            padding: 40px;
+            background-color: #f8f9fa;
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 20px; 
+            color: #333;
+        }
+
+        form {
+            background: white;
+            padding: 30px;
+            max-width: 500px;
+            margin: auto;
+            border-radius: 12px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+        }
+
+        input, button {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            font-size: 16px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            box-sizing: border-box;
+        }
+
+        button {
+            background-color: #28a745;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #218838;
+        }
+
+        .message {
+            text-align: center;
+            margin-top: 15px;
+            font-weight: bold;
+        }
+
+        .success { color: green; }
+        .error { color: red; }
+    </style>
+</head>
+<body>
+
+    <h2>🛒 Admin Panel - Add New Product</h2>
+
+    <form id="productForm">
+        <input type="text" name="name" placeholder="Product Name" required>
+        <input type="text" name="weight" placeholder="Weight (e.g., 1kg, 1L)" required>
+        <input type="number" name="price" placeholder="Price (₹)" min="1" required>
+        <input type="text" name="image" placeholder="Image Path (e.g., ../image/apple.jpg)" required>
+
+        <!-- Product Description Fields -->
+        <input type="text" name="details" placeholder="Details (e.g., With Bone,Skinless,Fresh,Curry Cut)" required>
+        <input type="text" name="unit" placeholder="Unit (e.g., 1 Pack)" required>
+        <input type="text" name="type" placeholder="Type (e.g., Chicken Curry Cut)" required>
+        <input type="text" name="serve_size" placeholder="Serve Size (e.g., Serves 4-5)" required>
+        <input type="text" name="pieces" placeholder="Pieces (e.g., 15 to 16 Pieces)" required>
+        <input type="text" name="shelf_life" placeholder="Shelf Life (e.g., 3 days)" required>
+
+        <button type="submit">Add Product</button>
+        <div class="message" id="msg"></div>
+    </form>
+
+    <script>
+        const form = document.getElementById('productForm');
+        const msg = document.getElementById('msg');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            msg.textContent = '';
+            msg.className = '';
+
+            const formData = new FormData(form);
+            const data = Object.fromEntries(formData.entries());
+
+            try {
+                const res = await fetch('/add-product4', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await res.json();
+
+                if (result.success) {
+                    msg.textContent = '✅ Product added successfully!';
+                    msg.className = 'message success';
+                    form.reset();
+                } else {
+                    msg.textContent = '❌ Failed to add product.';
+                    msg.className = 'message error';
+                }
+            } catch (err) {
+                msg.textContent = '❌ Server error. Try again later.';
+                msg.className = 'message error';
+            }
+        });
+    </script>
+
+</body>
+</html>

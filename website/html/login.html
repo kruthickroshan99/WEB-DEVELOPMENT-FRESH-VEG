@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta htt-equiv="X-UA-compatible" content="IE=edge">
+        <meta name="viewpoint" content="width=device-width,initial-scale=1.0">
+        <title>FRESHVEG</title>
+        <link rel="stylesheet" href="../css/login.css">
+        <link rel="stylesheet" href="../js/server.js">
+        <link href="https://fonts.googleapis.com/css2?family=Henny+Penny&display=swap" rel="stylesheet">
+    </head>
+    <body>
+        <div class="container">
+            <h1 class="title">Welcome To FreshVeg</h1>
+            
+            <div class="login-box">
+                <h2>LOGIN</h2>
+
+                <form action="http://localhost:3000/login" method="POST">
+                
+                <div class="input-box">
+                    <input type="email" name="email" placeholder="Email" required>
+                </div>
+
+                <div class="input-box">
+                    <input type="name" name="name" placeholder="Name" required>
+                </div>
+                
+                <div class="input-box">
+                    <input type="password" name="password" placeholder="Password" required>
+                </div>
+                
+                <div class="remember-me">
+                    <label><input type="checkbox"> Remember Me</label>
+                    <a href="#" style="text-decoration: none; color: inherit;">Forgot Password?</a>
+                </div>
+    
+                <button class="login-btn" type="submit" onclick="window.location.href='home.html';">Login</button>
+    
+                <p class="register">Don't have an account? <a href="#" style="text-decoration: none; color: inherit;">Register</a></p>
+            </form>
+            </div>
+    
+            <!-- Vegetable Images -->
+            <img src="../icon/leek.png" class="veg-img veg1"> <!-- Leek -->
+            <img src="../icon/tomato.png" class="veg-img veg2"> <!-- Tomato -->
+            <img src="../icon/carrots.png" class="veg-img veg3"> <!-- Carrot -->
+            <img src="../icon/grape-fruit.png" class="veg-img veg4"> <!-- Grapes -->
+            <img src="../icon/lettuce.png" class="veg-img veg5"> <!-- Lettuce -->
+            <img src="../icon/broccoli.png" class="veg-img veg6"> <!--broccoli-->
+        </div>
+    
+    </body>
+    </html>

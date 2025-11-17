@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fresh Veg</title>
+    <link rel="stylesheet" href="../css/product-detail.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Henny+Penny&display=swap">
+</head>
+<body>
+   <!-- Navigation Bar -->
+   <nav class="navbar">
+    <div class="logo"><button><img src="../icon/menu.png" alt="menu" class="nav-icon"></button>Fresh Veg</div>
+
+    <!-- Search Bar with PNG Icon -->
+    <div class="search-container">
+        <input type="text" placeholder="Search" class="search-bar">
+        <button class="search-btn">
+            <img src="../icon/search.png" alt="Search" class="search-icon">
+        </button>
+    </div>
+
+    <!-- Navigation Icons -->
+    <div class="nav-icons">
+        <span>
+            <img src="../icon/boy.png" alt="Account" class="nav-icon"> Account
+        </span>
+        <span>
+            <img src="../icon/shopping-bag.png" alt="Cart" class="nav-icon"> Cart
+        </span>
+    </div>
+</nav>
+
+<div class="product-container">
+    
+    <div class="product">
+        <img src=" " alt=" ">
+        <h3></h3>
+        <p></p>
+        <p></p>
+    </div>
+</div>
+
+<div class="container">
+  
+    <div class="product-details">
+        <h2>Product Details</h2>
+    </div>
+
+    <div class="why-shop">
+        <h3>Why shop from Fresh Veg?</h3>
+        <p><img src="../icon/delivery-man.png" alt="Carrot">Superfast DeliveryGet your order delivered to your doorstep at the earliest from dark stores near you</p>
+        <p><img src="../icon/best-offer.png" alt="Carrot">Best Prices & Offers Best price destination with offers directly from the manufacturers.</p>
+        <p><img src="../icon/fruits-and-vegetables.png" alt="Carrot">Wide Assortment Choose from 5000+ products across food, personal care, household & other categories.</p>
+      </div>
+    </div>
+    
+    <footer>
+        <div class="footer-container">
+          <div class="footer-links">
+            <h4>Useful Links</h4>
+            <div class="link-column">
+              <ul>
+                <li><a href="#">About</a></li>
+                <li><a href="#">Careers</a></li>
+                <li><a href="#">Blog</a></li>
+                <li><a href="#">Press</a></li>
+                <li><a href="#">Lead</a></li>
+                <li><a href="#">Value</a></li>
+              </ul>
+            </div>
+            <div class="link-column">
+              <ul>
+                <li><a href="#">Privacy</a></li>
+                <li><a href="#">Terms</a></li>
+                <li><a href="#">FAQs</a></li>
+                <li><a href="#">Security</a></li>
+                <li><a href="#">Mobile</a></li>
+                <li><a href="#">Contact</a></li>
+              </ul>
+            </div>
+            <div class="link-column">
+              <ul>
+                <li><a href="#">Partner</a></li>
+                <li><a href="#">Franchise</a></li>
+                <li><a href="#">Seller</a></li>
+                <li><a href="#">Warehouse</a></li>
+                <li><a href="#">Deliver</a></li>
+                <li><a href="#">Resources</a></li>
+              </ul>
+            </div>
+          </div>
+      
+          <div class="footer-bottom">
+            <p>© Fresh Veg Commerce Private Limited, 2016–2025</p>
+            <div class="social-icons">
+              <span>follow us on</span>
+              <a href="#"><img src="../icon/instagram.png" alt="Instagram"></a>
+              <a href="#"><img src="../icon/twitter.png" alt="X (Twitter)"></a>
+              <a href="#"><img src="../icon/facebook.png" alt="Facebook"></a>
+              <a href="#"><img src="../icon/linkedin.png" alt="LinkedIn"></a>
+              <a href="#"><img src="../icon/youtube.png" alt="YouTube"></a>
+            </div>
+          </div>
+      
+          <div class="footer-note">
+            <p>
+              "Fresh Veg" is owned & managed by Fresh Commerce Private Limited and is not related, linked or interconnected in whatsoever manner or nature, to “GROFREX.COM” which is a real estate services business operated by “RealStone Consultancy Services Private Limited”.
+            </p>
+          </div>
+        </div>
+      </footer>
+      
+      <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const productId = urlParams.get('id');
+    
+        function loadProduct() {
+            fetch(`http://localhost:3000/product4/${productId}`)
+                .then(res => res.json())
+                .then(product => {
+                    // Basic Info
+                    document.querySelector(".product img").src = product.image;
+                    document.querySelector(".product h3").textContent = product.name;
+                    document.querySelector(".product p:nth-of-type(1)").textContent = product.weight;
+                    document.querySelector(".product p:nth-of-type(2)").textContent = `₹${product.price}`;
+    
+                    // Remove old button if exists
+                    const existingBtn = document.querySelector(".product button");
+                    if (existingBtn) existingBtn.remove();
+    
+                    // Add Button
+                    const buttonText = product.quantity > 0 ? `Add (${product.quantity})` : 'Add';
+                    const addBtn = document.createElement('button');
+                    addBtn.classList.add('add-btn');
+                    addBtn.textContent = buttonText;
+    
+                    addBtn.dataset.name = product.name;
+                    addBtn.dataset.weight = product.weight;
+                    addBtn.dataset.price = product.price;
+                    addBtn.dataset.image = product.image;
+    
+                    addBtn.addEventListener('click', (event) => {
+                        event.stopPropagation();
+                        const { name, weight, price, image } = addBtn.dataset;
+    
+                        fetch('/add-to-cart', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ name, weight, price, image })
+                        })
+                        .then(res => res.json())
+                        .then(response => {
+                            if (response.success) {
+                                alert('✅ Added to cart!');
+                                loadProduct(); // Reload product to update quantity on button
+                            } else {
+                                alert('❌ Failed to add item.');
+                            }
+                        });
+                    });
+    
+                    document.querySelector(".product").appendChild(addBtn);
+    
+                    // Description
+                    const detailsHTML = `
+                        <p><strong>Details:</strong> ${product.details}</p>
+                        <p><strong>Unit:</strong> ${product.unit}</p>
+                        <p><strong>Type:</strong> ${product.type}</p>
+                        <p><strong>FSSAI License:</strong> 10017031001221</p>
+                        <p><strong>Serve Size:</strong> ${product.serve_size}</p>
+                        <p><strong>Pieces:</strong> ${product.pieces}</p>
+                        <p><strong>Hygienically Vacuum Packed</strong></p>
+                        <p><strong>Shelf Life:</strong> ${product.shelf_life}</p>
+                        <p><strong>Return Policy:</strong> Return within 72 hours if damaged.</p>
+                        <p><strong>Country of Origin:</strong> India</p>
+                        <p><strong>Customer Care:</strong> support@fv.com | 1800-999-0000</p>
+                        <p><strong>Seller:</strong> SUPERWELL COMTRADE PRIVATE LIMITED</p>
+                        <p><strong>Disclaimer:</strong> Slight weight variation may occur due to moisture.</p>
+                    `;
+                    document.querySelector(".product-details").innerHTML = detailsHTML;
+                })
+                .catch(err => {
+                    console.error('Error loading product:', err);
+                });
+        }
+    
+        // Load product info on page load
+        loadProduct();
+    </script>
+    
+    
+    
+</div>
+</body>
+</html>

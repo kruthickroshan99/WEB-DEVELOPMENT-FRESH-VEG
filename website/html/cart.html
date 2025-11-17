@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FRESHVEG</title>
+  <link rel="stylesheet" href="../css/cart.css">
+  <link href="https://fonts.googleapis.com/css2?family=Henny+Penny&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar">
+  <div class="logo"><img src="../icon/menu.png" alt="menu" class="nav-icon">Fresh Veg</div>
+  <div class="search-container">
+    <input type="text" placeholder="Search" class="search-bar">
+    <button class="search-btn">
+      <img src="../icon/search.png" alt="Search" class="search-icon">
+    </button>
+  </div>
+  <div class="nav-icons">
+    <span><img src="../icon/boy.png" alt="Account" class="nav-icon"> Account</span>
+    <span><img src="../icon/shopping-bag.png" alt="Cart" class="nav-icon"> Cart</span>
+  </div>
+</nav>
+
+<!-- Cart Layout -->
+<div class="cart-layout">
+  <!-- Left: Cart Items -->
+  <div class="cart-left" id="cart-items"></div>
+
+  <!-- Right: Cart Summary -->
+  <div class="cart-right">
+    <div class="cart-sidebar cart-sidebar-fixed">
+      <h2>My Cart</h2>
+
+      <div class="bill-row"><span>📋 Items total</span><span id="item-total">₹0</span></div>
+      <div class="bill-row"><span>🚴 Delivery charge</span><span>₹25</span></div>
+      <div class="bill-row"><span>📦 Handling charge</span><span>₹2</span></div>
+      <hr>
+      <div class="bill-row bold"><span>Grand total</span><span id="grand-total">₹0</span></div>
+
+      <!-- Donation -->
+      <div class="section">
+        <div class="section-title">
+          <img src="../icon/donate.png" alt="donation">
+          <div>
+            <div><strong>Feeding India donation</strong></div>
+            <small>Working towards a malnutrition-free India</small>
+          </div>
+          <input type="checkbox" class="checkbox" id="donation-box">
+        </div>
+      </div>
+
+      <!-- Tip -->
+      <div class="tip-buttons">
+        <button>😊 ₹20</button>
+        <button>😋 ₹30</button>
+        <button>😍 ₹50</button>
+        <button>🔥 Custom</button>
+      </div>
+      <div class="custom-tip-box" style="display:none; margin-top:10px;">
+        <input type="number" id="custom-tip" placeholder="Enter tip amount" style="width: 80%; padding: 5px; font-size: 16px; border-radius: 5px; border: 1px solid #ddd;">
+      </div>
+
+      <!-- Policy -->
+      <div class="section policy">
+        <strong>Cancellation Policy</strong><br>
+        Orders cannot be cancelled once packed for delivery. In case of unexpected delays, a refund will be provided, if applicable.
+      </div>
+
+      <!-- Footer -->
+      <div class="footer">
+        <div style="font-size: 18px; font-weight: bold;" id="final-total">₹0 TOTAL</div>
+        <button class="total-btn">Proceed ➤</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- JS Script -->
+<script>
+    let itemTotal = 0;
+    let donation = 0;
+    let tip = 0;
+  
+    function updateGrandTotal() {
+      let total = itemTotal + 25 + 2 + donation + tip;
+      document.getElementById('grand-total').textContent = `₹${total}`;
+      document.getElementById('final-total').textContent = `₹${total} TOTAL`;
+    }
+  
+    function loadCart() {
+      fetch('/cart-items')
+        .then(res => res.json())
+        .then(data => {
+          const cartDiv = document.getElementById('cart-items');
+          const itemTotalSpan = document.getElementById('item-total');
+          cartDiv.innerHTML = '';
+          itemTotal = 0;
+  
+          data.forEach(item => {
+            itemTotal += item.price * item.quantity;
+  
+            const div = document.createElement('div');
+            div.innerHTML = `
+              <img src="${item.image}" width="100">
+              <h3>${item.name}</h3>
+              <p>Weight: ${item.weight}</p>
+              <p>Price: ₹${item.price}</p>
+              <div>
+                <label>Quantity:</label>
+                <button onclick="updateQuantity(${item.id}, ${item.quantity - 1})">-</button>
+                <span id="qty-${item.id}">${item.quantity}</span>
+                <button onclick="updateQuantity(${item.id}, ${item.quantity + 1})">+</button>
+              </div>
+              <button onclick="removeFromCart(${item.id})">❌ Remove</button>
+            `;
+            cartDiv.appendChild(div);
+          });
+  
+          itemTotalSpan.textContent = `₹${itemTotal}`;
+          updateGrandTotal();
+        });
+    }
+  
+    function updateQuantity(id, newQty) {
+      if (newQty < 1) return;
+      fetch(`/update-quantity/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ quantity: newQty })
+      })
+      .then(res => res.json())
+      .then(data => data.success ? loadCart() : alert("❌ Failed to update quantity."));
+    }
+  
+    function removeFromCart(id) {
+      fetch(`/remove-from-cart/${id}`, { method: 'DELETE' })
+      .then(res => res.json())
+      .then(data => data.success ? loadCart() : alert("❌ Failed to remove item."));
+    }
+  
+    // Donation toggle
+    document.getElementById('donation-box').addEventListener('change', e => {
+      donation = e.target.checked ? 1 : 0;
+      updateGrandTotal();
+    });
+  
+    // Tip buttons
+    const tipButtons = document.querySelectorAll('.tip-buttons button');
+    const customTipBox = document.querySelector('.custom-tip-box');
+    const customTipInput = document.getElementById('custom-tip');
+  
+    tipButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        tipButtons.forEach(b => b.style.borderColor = '#ddd');
+        btn.style.borderColor = '#00c853';
+        const text = btn.textContent;
+  
+        if (text.includes('Custom')) {
+          customTipBox.style.display = 'block';
+          customTipInput.focus();
+        } else {
+          customTipBox.style.display = 'none';
+          const val = text.match(/₹(\d+)/);
+          tip = val ? parseInt(val[1]) : 0;
+          updateGrandTotal();
+        }
+      });
+    });
+  
+    customTipInput.addEventListener('input', () => {
+      tip = parseInt(customTipInput.value) || 0;
+      updateGrandTotal();
+    });
+  
+    window.onload = loadCart;
+  </script>
+  
+</body>
+</html>

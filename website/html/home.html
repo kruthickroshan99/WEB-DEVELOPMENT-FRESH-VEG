@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta htt-equiv="X-UA-compatible" content="IE=edge">
+        <meta name="viewpoint" content="width=device-width,initial-scale=1.0">
+        <title>FRESHVEG</title>
+        <link rel="stylesheet" href="../css/home.css">
+        <link href="https://fonts.googleapis.com/css2?family=Henny+Penny&display=swap" rel="stylesheet">
+    </head>
+    <body>
+        <!-- Navigation Bar -->
+        <nav class="navbar">
+            <div class="logo"><buttom><img src="../icon/menu.png" alt="menu" class="nav-icon"></buttom>Fresh Veg</div>
+        
+            <!-- Search Bar with PNG Icon -->
+            <div class="search-container">
+                <input type="text" placeholder="Search" class="search-bar">
+                <button class="search-btn">
+                    <img src="../icon/search.png" alt="Search" class="search-icon">
+                </button>
+            </div>
+        
+            <!-- Navigation Icons -->
+            <div class="nav-icons">
+                <span><a href="cart.html" style="text-decoration: none; color: inherit;">
+                    <img src="../icon/boy.png" alt="Account" class="nav-icon"> Account
+                </span>
+            </a>
+                <span><a href="cart.html" style="text-decoration: none; color: inherit;">
+                    <img src="../icon/shopping-bag.png" alt="Cart" class="nav-icon"> Cart
+                </span>
+            </a>
+            </div>
+        </nav>
+        
+        
+    <!-- Categories -->
+<div class="categories">
+    <span>
+        <img src="../icon/lettuce.png" alt="Fruits" class="category-icon"> Fruits & Vegetables
+    </span>
+    <span>
+        <div class="icon-group">
+            <img src="../icon/salmon.png" alt="Salmon" class="category-icon">
+            <img src="../icon/meat.png" alt="Meat" class="category-icon">
+        </div>
+        Meat & Seafood
+    </span>
+    <span>
+        <img src="../icon/seeds.png" alt="Staples" class="category-icon"> Daily Staples
+    </span>
+    <span>
+        <img src="../icon/juice.png" alt="Juice" class="category-icon"> Snacks & Beverages
+    </span>
+    <span>
+        <div class="icon-group">
+            <img src="../icon/milk.png" alt="Milk" class="category-icon">
+            <img src="../icon/tray.png" alt="Tray" class="category-icon">
+        </div>
+        Eggs & Dairy Products
+    </span>
+</div>
+
+        <!-- Product List -->
+        <div class="product-container">
+            <div class="product">
+                <img src="../image/carrot.jpg" alt="Carrot">
+                <h3>CARROT</h3>
+                <p>1kg</p>
+                <p>₹50</p>
+                <button>Add</button>
+            </div>
+            <div class="product">
+                <img src="../image/milk.avif" alt="Milk">
+                <h3>MILK</h3>
+                <p>1kg</p>
+                <p>₹100</p>
+                <button>Add</button>
+            </div>
+            <div class="product">
+                <img src="../image/onion.avif" alt="Staples">
+                <h3>ONION</h3>
+                <p>1kg</p>
+                <p>₹50</p>
+                <button>Add</button>
+            </div>
+            <div class="product">
+                <img src="../icon/juice.png" alt="Beverages">
+                <h3>BEVERAGES</h3>
+                <p>1kg</p>
+                <p>₹1000</p>
+                <button>Add</button>
+            </div>
+            <div class="product">
+                <a href="../product-list.html/laa-fresh-skinless-chicken-curry-cut.html" style="text-decoration: none; color: inherit;">
+                <img src="../image/meat.jpg" alt="Meat">
+                <h3>Laa Fresh Skinless Chicken Curry Cut</h3>
+                <p>1kg</p>
+                <p>₹1000</p>
+                </a>
+                <button>Add</button>
+            </div>
+            </div>
+
+            <script>
+                document.querySelectorAll('.product button').forEach((btn, index) => {
+                    btn.addEventListener('click', () => {
+                        const product = btn.parentElement;
+                        const name = product.querySelector('h3').innerText;
+                        const weight = product.querySelectorAll('p')[0].innerText;
+                        const price = product.querySelectorAll('p')[1].innerText.replace('₹','');
+                        const image = product.querySelector('img').getAttribute('src');
+            
+                        fetch('/add-to-cart', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ name, weight, price, image })
+                        })
+                        .then(res => res.json())
+                    });
+                });
+            </script>
+
+
+
+    </body>
+    </html>
+    

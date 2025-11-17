@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FRESHVEG</title>
+    <link rel="stylesheet" href="../css/fruits-&-vegetables.css">
+    <link href="https://fonts.googleapis.com/css2?family=Henny+Penny&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<!-- Navigation Bar -->
+<nav class="navbar">
+    <div class="logo">
+        <button><img src="../icon/menu.png" alt="menu" class="nav-icon"></button> Fresh Veg
+    </div>
+
+    <!-- Search Bar with PNG Icon -->
+    <div class="search-container">
+        <input type="text" placeholder="Search" class="search-bar">
+        <button class="search-btn">
+            <img src="../icon/search.png" alt="Search" class="search-icon">
+        </button>
+    </div>
+
+    <!-- Navigation Icons -->
+    <div class="nav-icons">
+        <a href="cart.html" style="text-decoration: none; color: inherit;">
+        <span>
+            <img src="../icon/boy.png" alt="Account" class="nav-icon"> Account
+        </span></a>
+
+        <a href="cart.html" style="text-decoration: none; color: inherit;">
+        <span>
+            <img src="../icon/shopping-bag.png" alt="Cart" class="nav-icon"> Cart
+        </span></a>
+    </div>
+</nav>
+
+<!-- Categories -->
+<div class="categories">
+
+    <a href="fruits-&-vegetables.html" style="text-decoration: none; color: inherit;">
+    <span>
+        <img src="../icon/lettuce.png" alt="Fruits" class="category-icon"> Fruits & Vegetables
+    </span></a>
+
+    <a href="meat-&-seafood.html" style="text-decoration: none; color: inherit;">
+    <span>
+        <div class="icon-group">
+            <img src="../icon/salmon.png" alt="Salmon" class="category-icon">
+            <img src="../icon/meat.png" alt="Meat" class="category-icon">
+        </div>
+        Meat & Seafood
+    </span></a>
+
+    <a href="daily-staples.html" style="text-decoration: none; color: inherit;">
+    <span>
+        <img src="../icon/seeds.png" alt="Staples" class="category-icon"> Daily Staples
+    </span></a>
+
+    <a href="snacks-&-beverages.html" style="text-decoration: none; color: inherit;">
+    <span>
+        <img src="../icon/juice.png" alt="Juice" class="category-icon"> Snacks & Beverages
+    </span></a>
+
+    <a href="eggs-&-dairy-products.html" style="text-decoration: none; color: inherit;">
+    <span>
+        <div class="icon-group">
+            <img src="../icon/milk.png" alt="Milk" class="category-icon">
+            <img src="../icon/tray.png" alt="Tray" class="category-icon">
+        </div>
+        Eggs & Dairy Products
+    </span></a>
+</div>
+
+<!-- Product List -->
+<div class="product-container" id="product-container">
+    <!-- Products will be injected here dynamically -->
+</div>
+
+<script>
+    // Fetch and display products from backend
+    fetch('/products1')
+        .then(res => res.json())
+        .then(products1 => {
+            const container = document.getElementById('product-container');
+            container.innerHTML = ''; // Clear previous items
+    
+            products1.forEach(product => {
+                const productDiv = document.createElement('div');
+                productDiv.classList.add('product');
+    
+                 // Set click to go to product details page
+                 productDiv.addEventListener('click', () => {
+                    window.location.href = `veg-product-details.html?id=${product.id}`;
+                });
+    
+    
+                const buttonText = product.quantity > 0 ? `Add (${product.quantity})` : 'Add';
+    
+                productDiv.innerHTML = `
+                    <img src="${product.image}" alt="${product.name}">
+                    <h3>${product.name}</h3>
+                    <p>${product.weight}</p>
+                    <p>₹${product.price}</p>
+                    <button class="add-btn" data-name="${product.name}" data-weight="${product.weight}" data-price="${product.price}" data-image="${product.image}">${buttonText}</button>
+                `;
+    
+                container.appendChild(productDiv);
+            });
+    
+            // Add event listeners to each Add button
+            container.querySelectorAll('.add-btn').forEach((btn) => {
+                btn.addEventListener('click', (event) => {
+                    event.stopPropagation(); // Prevent click from reaching product container
+                    
+                    const { name, weight, price, image } = btn.dataset;
+    
+                    fetch('/add-to-cart', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ name, weight, price, image })
+                    })
+                    .then(res => res.json())
+                    .then(response => {
+                        if (response.success) {
+                            alert('✅ Added to cart!');
+                            location.reload(); // Refresh to update quantity on button
+                        } else {
+                            alert('❌ Failed to add item.');
+                        }
+                    });
+                });
+            });
+        });
+    </script>
+</body>
+</html>
